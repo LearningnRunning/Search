@@ -82,7 +82,6 @@ class DinerSearchEngine:
             검색 결과 DataFrame
         """
         norm_query = normalize(query)
-        diner_names = [d["name"] for d in self.diner_infos]
 
         # 1. 정확한 매칭
         exact_matches = [

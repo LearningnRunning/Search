@@ -6,9 +6,9 @@ from .search_engine import DinerSearchEngine, SemanticSearcher
 from .utils import jamo_similarity, load_diner_data, normalize
 
 __all__ = [
-    'DinerSearchEngine',
-    'SemanticSearcher', 
-    'normalize',
-    'jamo_similarity',
-    'load_diner_data'
-] 
+    "DinerSearchEngine",
+    "SemanticSearcher",
+    "normalize",
+    "jamo_similarity",
+    "load_diner_data",
+]

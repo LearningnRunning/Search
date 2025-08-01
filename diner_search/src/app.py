@@ -3,8 +3,8 @@
 """
 
 import streamlit as st
-from search_engine import DinerSearchEngine
 
+from search_engine import DinerSearchEngine
 from utils import load_diner_data
 
 
