@@ -1,170 +1,296 @@
-# 음식점 검색 시스템
+# 🍽️ 음식점 검색 시스템
 
-Streamlit을 사용한 음식점 이름 검색 시스템입니다.
+다양한 검색 방법을 활용한 한국어 음식점 검색 시스템입니다. 정확한 매칭, 부분 매칭, 자모 유사도, 의미론적 검색을 조합하여 사용자가 원하는 음식점을 효과적으로 찾을 수 있습니다.
 
-## 기능
+## ✨ 주요 기능
 
-- 정확한 매칭 (Exact Match)
-- 부분 매칭 (Partial Match)
-- 자모 기반 유사도 검색 (Jamo-based Search)
-- 의미론적 검색 (Semantic Search)
-- 통합 검색 (Combined Search)
+- **정확한 매칭**: 완전히 일치하는 음식점 검색
+- **부분 매칭**: 검색어가 포함된 음식점 검색
+- **자모 매칭**: 한글 자모 유사도 기반 검색
+- **의미론적 검색**: SBERT 모델을 활용한 의미 기반 검색
+- **통합 검색**: 여러 검색 방법을 조합한 최적화된 결과
+- **벡터 캐싱**: 미리 계산된 벡터로 빠른 검색
 
-## 개발 환경
+## 🚀 Hugging Face Spaces 배포
 
-### 전제 조건
-- Python 3.12 이상
-- uv 패키지 관리 도구
+이 프로젝트는 Hugging Face Spaces에 배포되어 있습니다:
 
-### Python 3.12 설치
+**[🌐 라이브 데모 보기](https://huggingface.co/spaces/YOUR_USERNAME/diner-search)**
+
+## 🛠️ 로컬 실행
+
+### 1. 환경 설정
+
 ```bash
-# macOS (Homebrew)
-brew install python@3.12
+# Python 3.11 이상 필요
+python --version
 
-# pyenv 사용
-pyenv install 3.12.0
-pyenv local 3.12.0
-
-# 공식 사이트
-# https://www.python.org/downloads/
-```
-
-### uv 설치
-```bash
-# macOS/Linux
+# uv 설치 (권장)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # 또는 Homebrew 사용
 brew install uv
 ```
 
-## 설치 및 실행
+### 2. 프로젝트 설정
 
-### 1. 프로젝트 클론
 ```bash
+# 프로젝트 클론
 git clone <repository-url>
 cd diner_search
+
+# 개발 환경 설정
+make setup
 ```
 
-### 2. Python 버전 확인
-```bash
-# Python 버전 확인
-make check-python
+### 3. 벡터 생성 (선택사항)
 
-# 또는 직접 확인
-./scripts/check_python_version.sh
+앱 시작 시간을 단축하려면 음식점 이름의 벡터를 미리 생성하세요:
+
+```bash
+# 벡터 생성 (처음 한 번만 실행)
+make generate-embeddings
+
+# 생성된 벡터 검증
+make verify-embeddings
 ```
 
-### 3. 의존성 설치
+**참고**: 벡터 생성에는 시간이 걸릴 수 있습니다 (약 46만 개 음식점).
+
+### 4. 앱 실행
+
 ```bash
-# 개발 환경 동기화 (가상환경 생성 + 의존성 설치)
+# Gradio 앱 실행
+make run
+
+# 또는 직접 실행
+uv run python app.py
+```
+
+### 5. 브라우저에서 접속
+
+```
+http://localhost:7860
+```
+
+## 📁 프로젝트 구조
+
+```
+diner_search/
+├── app.py                 # 🚀 통합 Gradio 앱 (로컬 + 배포용)
+├── pyproject.toml         # 프로젝트 설정 및 의존성 (uv)
+├── uv.lock               # 의존성 잠금 파일
+├── src/
+│   ├── search_engine.py  # 검색 엔진 구현
+│   ├── embedding_loader.py # 벡터 로더
+│   ├── utils.py          # 유틸리티 함수
+│   └── __init__.py
+├── data/
+│   ├── diner_infos.json  # 음식점 데이터
+│   └── embeddings/       # 미리 계산된 벡터 (자동 생성)
+│       ├── diner_embeddings.pt
+│       ├── diner_embeddings.pkl
+│       └── diner_metadata.json
+├── scripts/
+│   └── generate_embeddings.py # 벡터 생성 스크립트
+├── README.md             # 프로젝트 설명
+├── README_HF.md          # Hugging Face Spaces 설명
+├── DEPLOYMENT_GUIDE.md   # 배포 가이드
+└── Makefile              # 개발 작업 자동화 (uv 기반)
+```
+
+## 🔧 기술 스택
+
+- **Frontend**: Gradio
+- **Backend**: Python 3.11+
+- **Package Manager**: uv
+- **ML/NLP**: 
+  - Sentence Transformers (SBERT)
+  - PyTorch
+  - Jamo (한글 자모 처리)
+- **Data Processing**: Pandas
+- **Fuzzy Matching**: FuzzyWuzzy, python-Levenshtein
+- **Vector Storage**: PyTorch (.pt), Pickle (.pkl)
+
+## 📊 검색 방법
+
+### 1. 정확한 매칭
+- 검색어와 음식점 이름이 완전히 일치하는 경우
+- 예: "윤씨네" → "윤씨네"
+
+### 2. 부분 매칭
+- 검색어가 음식점 이름에 포함된 경우
+- 예: "피자" → "피자헛", "도미노피자"
+
+### 3. 자모 매칭
+- 한글 자모 유사도를 기반으로 한 검색
+- 발음이 비슷한 음식점을 찾을 수 있음
+- 예: "윤씨네" → "윤시네", "윤씨내"
+
+### 4. 의미론적 검색
+- SBERT 모델을 활용한 의미 기반 검색
+- 유사한 의미의 음식점을 찾을 수 있음
+- 예: "맛있는 집" → "맛집", "좋은 음식점"
+
+### 5. 통합 검색
+- 자모 유사도와 의미론적 검색을 조합
+- 더 정확하고 다양한 결과 제공
+
+## 🎯 사용 예시
+
+```
+검색어: "윤씨네"
+결과:
+- 윤씨네 (정확한 매칭)
+- 윤시네 (자모 매칭)
+- 윤씨내 (자모 매칭)
+
+검색어: "피자"
+결과:
+- 피자헛 (부분 매칭)
+- 도미노피자 (부분 매칭)
+- 피자나라 (부분 매칭)
+
+검색어: "맛있는 집"
+결과:
+- 맛집 (의미론적 매칭)
+- 좋은 음식점 (의미론적 매칭)
+- 맛있는집 (정확한 매칭)
+```
+
+## 🔧 설정 옵션
+
+- **검색 결과 수**: 1-20개 (기본값: 5개)
+- **자모 유사도 임계값**: 0.1-1.0 (기본값: 0.7)
+
+## 🛠️ 개발 도구
+
+### uv 명령어
+
+```bash
+# 의존성 설치
 uv sync
 
-# 또는 개발 의존성 포함
+# 개발 의존성 포함 설치
 uv sync --dev
-```
 
-### 4. 애플리케이션 실행
-```bash
-# uv로 실행 (가상환경 자동 활성화)
-uv run streamlit run src/app.py
-
-# 또는 가상환경 활성화 후 실행
-source .venv/bin/activate
-streamlit run src/app.py
-```
-
-## 개발 도구
-
-### 패키지 관리
-```bash
-# 의존성 패키지 목록 확인
-uv tree
+# 앱 실행
+uv run python app.py
 
 # 패키지 추가
 uv add requests
 
-# 개발 의존성 패키지 추가
-uv add --dev ruff
+# 개발 패키지 추가
+uv add --dev pytest
 
-# 패키지 삭제
+# 패키지 제거
 uv remove requests
+
+# 의존성 트리 확인
+uv tree
 ```
 
-### 코드 품질 관리
+### Make 명령어
+
 ```bash
-# 코드 포맷팅
-uv run ruff format .
+# 도움말
+make help
 
-# 린팅
-uv run ruff check .
+# 개발 환경 설정
+make setup
 
-# 타입 체크
-uv run mypy src/
-```
+# 앱 실행
+make run
 
-### 테스트
-```bash
+# 코드 품질 검사
+make check
+
 # 테스트 실행
-uv run pytest
+make test
 
-# 커버리지 포함 테스트
-uv run pytest --cov=src
+# 벡터 생성
+make generate-embeddings
+
+# 벡터 검증
+make verify-embeddings
+
+# Hugging Face 배포 준비
+make prepare-hf
 ```
 
-## 프로젝트 구조
+## 🔢 벡터 관리
 
-```
-diner_search/
-├── data/
-│   └── diner_infos.json      # 음식점 데이터
-├── scripts/
-│   ├── setup.sh              # 자동 설정 스크립트
-│   └── check_python_version.sh # Python 버전 확인
-├── src/
-│   ├── __init__.py           # 패키지 초기화
-│   ├── app.py               # Streamlit 메인 애플리케이션
-│   ├── search_engine.py     # 검색 엔진 클래스
-│   ├── utils.py             # 유틸리티 함수
-│   └── legacy_code.py       # 기존 검색 로직 (참조용)
-├── .gitignore               # Git 무시 파일
-├── .pre-commit-config.yaml  # pre-commit 설정
-├── .python-version          # Python 버전 명시
-├── Makefile                 # 개발 작업 자동화
-├── pyproject.toml           # 프로젝트 설정 및 의존성
-├── README.md                # 프로젝트 설명
-└── requirements.txt         # pip 호환성용 (선택사항)
-```
-
-## 사용법
-
-1. 웹 브라우저에서 `http://localhost:8501` 접속
-2. 검색창에 음식점 이름 입력
-3. 검색 결과 확인 (매칭 타입별로 구분됨)
-
-## Python 3.12의 장점
-
-- **향상된 성능**: Python 3.12는 이전 버전보다 5-10% 빠른 실행 속도
-- **더 나은 오류 메시지**: 더 명확하고 유용한 오류 메시지
-- **타입 힌트 개선**: 더 강력한 타입 시스템 지원
-- **최신 라이브러리 지원**: 최신 패키지들과의 호환성 향상
-
-## 의존성 내보내기
+### 벡터 생성
 
 ```bash
-# 프로덕션용 requirements.txt 생성
-uv export --no-dev --format requirements.txt > requirements.txt
+# 기본 설정으로 벡터 생성
+make generate-embeddings
 
-# 개발용 requirements.txt 생성 (dev 포함)
-uv export --format requirements.txt > requirements.txt
+# 또는 직접 실행
+uv run python scripts/generate_embeddings.py
+
+# 배치 크기 조정
+uv run python scripts/generate_embeddings.py --batch-size 64
+
+# 다른 모델 사용
+uv run python scripts/generate_embeddings.py --model "sentence-transformers/all-MiniLM-L6-v2"
 ```
 
-## 기존 pip 사용자
+### 벡터 검증
 
-uv 없이 pip를 사용하려면:
 ```bash
-# requirements.txt 생성 후
-pip install -r requirements.txt
+# 생성된 벡터 파일 검증
+make verify-embeddings
+
+# 또는 직접 실행
+uv run python scripts/generate_embeddings.py --verify
 ```
 
-**주의**: 가상환경이 적용되지 않으면 시스템 전역 Python에 설치될 수 있습니다. 
+### 벡터 파일 형식
+
+- **`.pt`**: PyTorch 텐서 형식 (빠른 로딩)
+- **`.pkl`**: Pickle 압축 형식 (작은 파일 크기)
+- **`.json`**: 메타데이터 (음식점 정보, 모델 정보)
+
+## 🚀 Hugging Face Spaces 배포 방법
+
+1. **Hugging Face 계정 생성**
+   - [Hugging Face](https://huggingface.co)에서 계정 생성
+
+2. **새 Space 생성**
+   - "New Space" 클릭
+   - Space 이름: `diner-search`
+   - SDK: Gradio 선택
+   - License: MIT 선택
+
+3. **파일 업로드**
+   - `app.py` (통합 앱 파일)
+   - `pyproject.toml` (의존성)
+   - `README_HF.md` → `README.md`로 이름 변경
+   - `data/diner_infos.json` (음식점 데이터)
+   - `data/embeddings/` 폴더 전체 (벡터 파일들)
+   - `src/` 폴더 전체
+
+4. **배포 완료**
+   - 자동으로 빌드 및 배포됨
+   - 공개 URL 제공
+
+## 🤝 기여하기
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📝 라이선스
+
+이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 `LICENSE` 파일을 참조하세요.
+
+## 📞 문의
+
+프로젝트에 대한 문의사항이 있으시면 이슈를 생성해 주세요.
+
+---
+
+🍽️ **음식점 검색 시스템** | 다양한 검색 방법으로 원하는 음식점을 찾아보세요! 

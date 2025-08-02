@@ -160,30 +160,43 @@ cython_debug/
 #  *.iml
 #  *.ipr
 #  *.iws
+.idea/
+*.iml
+*.ipr
+*.iws
 
-# Streamlit
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Project specific
+*.log
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Hugging Face Spaces specific
+.huggingface/
+.cache/
+models/
+*.bin
+*.safetensors
+
+# Streamlit (legacy)
 .streamlit/
 
-# Data files
-*.csv
-*.json
-!data/diner_infos.json
+# Gradio
+gradio_cached_examples/
 
-# Model files
-*.pkl
-*.joblib
-*.h5
-*.onnx
-
-# Logs
-*.log
-logs/
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db 
+# 벡터 파일들 (큰 파일이므로 git에서 제외)
+data/embeddings/
+*.pt
+*.pkl 
