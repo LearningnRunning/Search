@@ -8,8 +8,8 @@ import pandas as pd
 import torch
 from sentence_transformers import SentenceTransformer, util
 
-from utils import jamo_similarity, normalize
-from embedding_loader import EmbeddingLoader, load_embeddings
+from .utils import jamo_similarity, normalize
+from .embedding_loader import EmbeddingLoader, load_embeddings
 
 
 class SemanticSearcher:
@@ -114,7 +114,7 @@ class DinerSearchEngine:
         self.semantic_searcher = SemanticSearcher(self.model_name)
         
         if self.diner_infos is None:
-            from utils import load_diner_data
+            from .utils import load_diner_data
             self.diner_infos = load_diner_data()
         
         # 음식점 이름들의 임베딩을 미리 계산

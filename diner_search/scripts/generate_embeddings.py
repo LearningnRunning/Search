@@ -14,6 +14,10 @@ from tqdm import tqdm
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
+# src 디렉토리를 Python 경로에 추가
+src_path = project_root / "src"
+sys.path.append(str(src_path))
+
 from src.utils import load_diner_data
 
 
