@@ -36,7 +36,7 @@ def jamo_similarity(a: str, b: str) -> tuple[bool, float]:
     b_jamo = " ".join(hangul_to_jamo(b))
     score = fuzz.ratio(a_jamo, b_jamo)
 
-    if score > 80:
+    if score > 90:
         return True, score
     else:
         matches = sum(x == y for x, y in zip(a_jamo, b_jamo, strict=False))

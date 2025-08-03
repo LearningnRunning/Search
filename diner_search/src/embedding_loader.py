@@ -6,8 +6,12 @@ import os
 import json
 import pickle
 import torch
+import logging
 from typing import Optional, Dict, Any, Tuple
 from pathlib import Path
+
+# 로거 설정
+logger = logging.getLogger(__name__)
 
 
 class EmbeddingLoader:
@@ -35,17 +39,17 @@ class EmbeddingLoader:
         metadata_path = self.embeddings_dir / "diner_metadata.json"
         
         if not pt_path.exists():
-            print(f"❌ 벡터 파일을 찾을 수 없습니다: {pt_path}")
+            logger.error(f"❌ 벡터 파일을 찾을 수 없습니다: {pt_path}")
             return False
             
         if not metadata_path.exists():
-            print(f"❌ 메타데이터 파일을 찾을 수 없습니다: {metadata_path}")
+            logger.error(f"❌ 메타데이터 파일을 찾을 수 없습니다: {metadata_path}")
             return False
         
         try:
             # 벡터 로드
             self.embeddings = torch.load(pt_path)
-            print(f"✅ 벡터 로드 완료: {self.embeddings.shape}")
+            logger.info(f"✅ 벡터 로드 완료: {self.embeddings.shape}")
             
             # 메타데이터 로드
             with open(metadata_path, "r", encoding="utf-8") as f:
@@ -54,11 +58,11 @@ class EmbeddingLoader:
             self.diner_names = self.metadata["diner_names"]
             self.diner_infos = self.metadata["diner_infos"]
             
-            print(f"✅ 메타데이터 로드 완료: {len(self.diner_names)}개 음식점")
+            logger.info(f"✅ 메타데이터 로드 완료: {len(self.diner_names)}개 음식점")
             return True
             
         except Exception as e:
-            print(f"❌ 파일 로드 중 오류 발생: {e}")
+            logger.error(f"❌ 파일 로드 중 오류 발생: {e}")
             return False
     
     def load_pkl_format(self) -> bool:
@@ -71,7 +75,7 @@ class EmbeddingLoader:
         pkl_path = self.embeddings_dir / "diner_embeddings.pkl"
         
         if not pkl_path.exists():
-            print(f"❌ 벡터 파일을 찾을 수 없습니다: {pkl_path}")
+            logger.error(f"❌ 벡터 파일을 찾을 수 없습니다: {pkl_path}")
             return False
         
         try:
@@ -83,12 +87,12 @@ class EmbeddingLoader:
             self.diner_names = self.metadata["diner_names"]
             self.diner_infos = self.metadata["diner_infos"]
             
-            print(f"✅ 벡터 로드 완료: {self.embeddings.shape}")
-            print(f"✅ 메타데이터 로드 완료: {len(self.diner_names)}개 음식점")
+            logger.info(f"✅ 벡터 로드 완료: {self.embeddings.shape}")
+            logger.info(f"✅ 메타데이터 로드 완료: {len(self.diner_names)}개 음식점")
             return True
             
         except Exception as e:
-            print(f"❌ 파일 로드 중 오류 발생: {e}")
+            logger.error(f"❌ 파일 로드 중 오류 발생: {e}")
             return False
     
     def load(self, prefer_pkl: bool = True) -> bool:

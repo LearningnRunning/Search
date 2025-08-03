@@ -43,7 +43,7 @@ install-dev: check-python
 # Gradio 앱 실행
 run: install
 	@echo "🚀 Gradio 앱 실행 중..."
-	uv run python app.py
+	uv run gradio app.py
 
 # 테스트 실행
 test: install-dev
